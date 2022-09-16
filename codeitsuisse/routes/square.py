@@ -134,3 +134,8 @@ def evaluate_ticker_p1():
     logging.info("output :{}".format(to_cumulative_format))
     return json.dumps(to_cumulative_format)
 
+@app.route("/test", methods=["POST"])
+def test():
+    return "test"
+
+
