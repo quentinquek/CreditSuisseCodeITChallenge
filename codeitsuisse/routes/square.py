@@ -16,5 +16,7 @@ def evaluate():
     logging.info("My result :{}".format(result))
     return json.dumps(result)
 
-
+@app.route("/tickerStreamPart1", methods=["POST"])
+def evaluate_ticker_p1():
+    return "Hello, this post endpoint is working."
 
