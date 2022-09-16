@@ -6,6 +6,7 @@ from datetime import datetime
 
 from codeitsuisse import app
 
+<<<<<<< HEAD
 
 logger = logging.getLogger(__name__)
 
@@ -142,6 +143,16 @@ def test():
 #     result = inputValue * inputValue
 #     logging.info("My result :{}".format(result))
 #     return json.dumps(result)
+=======
+@app.route('/square', methods=['POST'])
+def evaluate():
+    data = request.get_json()
+    logging.info("data sent for evaluation {}".format(data))
+    inputValue = data.get("input")
+    result = inputValue * inputValue
+    logging.info("My result :{}".format(result))
+    return json.dumps(result)
+>>>>>>> 39f2665ec4e12b02c48d8dcbfec1d0f1e65a9cca
 
 # @app.route('/tickerStreamPart1', methods=['POST'])
 # def evaluate():
