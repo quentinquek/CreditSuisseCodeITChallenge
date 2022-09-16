@@ -73,11 +73,10 @@ def to_cumulative(stream: list):
                 # ])
 
                 if prev_ticker not in running:
-                    running[prev_ticker] = {
-                        "quantity": prev_cumulative_quantity, "notional": prev_cumulative_notional}
+                    running[prev_ticker] = {"quantity": prev_cumulative_quantity, "notional": prev_cumulative_notional}
                 else:
-                    running[prev_ticker]["quantity"] = running[prev_ticker]["quantity"] + prev_cumulative_quantity
-                    running[prev_ticker]["notional"] = running[prev_ticker]["notional"] + prev_cumulative_notional
+                    running[prev_ticker]["quantity"] += prev_cumulative_quantity
+                    running[prev_ticker]["notional"] += prev_cumulative_notional
 
                 result_list_unaggregated.append([
                     prev_timestamp, prev_ticker,
@@ -164,7 +163,7 @@ def to_cumulative(stream: list):
             else:
                 result_final.append(','.join(record))
 
-    output = {"output": result_final}
+    output = {"outpuitve": result_final}
 
     return output
 
