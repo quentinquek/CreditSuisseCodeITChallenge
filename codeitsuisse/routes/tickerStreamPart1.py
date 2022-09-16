@@ -105,21 +105,22 @@ def to_cumulative(stream: list):
             else:
                 result_final.append(','.join(record))
 
-    return result_final
+    output = { "output": result_final}
 
-    raise Exception
+    return output
+
+    # raise Exception
 
 logger = logging.getLogger(__name__)
 
+
 @app.route('/tickerStreamPart1', methods=['POST'])
-def evaluate():
+def tickerStreamPart1():
     data = request.get_json()
     logging.info("data sent for evaluation {}".format(data))
     inputValue = data.get("stream")
-    result = inputValue * inputValue
-    print("Testing code...")
-    logging.info("My result :{}".format(inputValue))
-    return json.dumps(inputValue)
-
-
+    # print("Testing code...")
+    result = to_cumulative(inputValue)
+    logging.info("My result :{}".format(result))
+    return json.dumps(result)
 
