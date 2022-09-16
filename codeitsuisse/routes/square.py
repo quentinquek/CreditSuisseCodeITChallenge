@@ -18,5 +18,9 @@ def evaluate():
 
 @app.route("/tickerStreamPart1", methods=["POST"])
 def evaluate_ticker_p1():
-    return "Hello, this post endpoint is working."
+    data = request.get_json()
+    logging.info("data sent for evaluation {}".format(data))
+    inputValue = data.get("stream")
+    logging.info("My result :{}".format(inputValue))
+    return json.dumps(inputValue)
 
