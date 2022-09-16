@@ -6,16 +6,16 @@ from datetime import datetime
 
 from codeitsuisse import app
 
-from datetime import datetime
 
-"""
-Assumption is in README.md
-"""
 def to_cumulative_delayed(stream: list, quantity_block: int):
+    '''
+    Assumptions:
+    1. There could be multiple same ticks in the same timestamp but which set of tick that is added to the block does not have a particular order in this case
 
-    if stream == []:
-      return stream
-    ### Process data
+    '''
+    if len(stream) == 0:
+        return []
+    # Process data
     split_list = []
 
     # Split each record within the list into timestamp, ticket, quantity, notional
@@ -32,14 +32,13 @@ def to_cumulative_delayed(stream: list, quantity_block: int):
     sorted_tickers_list = sorted(split_list, key=lambda x: x[1])
 
     # Group by tickers then sort by timestamp
-    processed_list = []  # sorted by
+    processed_list = []  # sorted by timestamp
     temp_array = [sorted_tickers_list[0]]
 
     for record in sorted_tickers_list[1:]:
         # Case 1 - If same ticker, append
         if record[1] == temp_array[-1][1]:
             temp_array.append(record)
-            # print(temp_array)
 
         # Case 2 - Else, sort temp array and set it to new ticker
         else:
@@ -49,106 +48,75 @@ def to_cumulative_delayed(stream: list, quantity_block: int):
     # Add in the last ticker temp array to processed list
     processed_list += sorted(temp_array, key=lambda x: x[0])
 
-    ### Cumulative Quantities in Blocks of Quantity Blocks
-    result = []
+    # Cumulative Quantities in Blocks of Quantity Blocks
 
-    # For first record
-    timestamp = processed_list[0][0]
-    ticker = processed_list[0][1]
-    quantity = processed_list[0][2]
-    price = processed_list[0][3]
+    # required_quantity works as a tracker
+    required_quantity = quantity_block
+    blocks_list = []
+    current_timestamp = ""
+    current_ticker = processed_list[0][1]
+    current_quantity = 0
+    current_notional = 0
 
-    # If current quantity less than quantity block, append to block list and pop the first element
-    if quantity_block - quantity >= 0:
-        result.append([timestamp, ticker, quantity, quantity * price])
-        processed_list.pop(0)
+    while len(processed_list) > 0:
 
-    # else if current quantity more than quantity block, append to block list and update the processed list first element
-    else:
-        result.append(
-            [timestamp, ticker, quantity_block, quantity_block * price])
-        processed_list[0] = [
-            timestamp, ticker, quantity - quantity_block, price
-        ]
+        current_data = processed_list[0]
 
-    while processed_list:
+        # Case 1: If required_quantity is 0, add block into blocks_list
+        if required_quantity == 0:
+            blocks_list.append(
+                [current_timestamp, current_ticker, current_quantity, round(current_notional, 1)])
+            required_quantity = quantity_block
+            current_quantity = 0
+            current_notional = 0
 
-        timestamp = processed_list[0][0]
-        ticker = processed_list[0][1]
-        quantity = processed_list[0][2]
-        price = processed_list[0][3]
+        # Case 2: If required_quantity is more than 0 (meaning we still need to add to the block to reach desired quantity_block)
+        elif required_quantity > 0:
 
-        # If ticker changed, check if last element in result list is equal to quantity block
-        last_ticker = result[-1][1]
-        last_quantity = result[-1][2]
-        if ticker != last_ticker:
+            if current_data[1] == current_ticker:
 
-            # If last element quantity lesser than quantity block, discard it
-            if last_quantity < quantity_block:
-                result.pop()
+                if current_data[2] == required_quantity:
+                    current_timestamp = current_data[0]
+                    current_quantity += current_data[2]
+                    current_notional += (current_data[2] * current_data[3])
+                    # Update required_quantity
+                    required_quantity -= current_data[2]
 
-            # If current quantity less than quantity block, append to block list and pop the first element
-            if quantity_block - quantity >= 0:
-                result.append([
-                    timestamp, ticker, quantity_block, quantity_block * price
-                ])
-                processed_list.pop(0)
-
-            # else if current quantity more than quantity block, append to block list and update the processed list first element
-            else:
-                result.append([
-                    timestamp, ticker, quantity_block, quantity_block * price
-                ])
-                processed_list[0] = [
-                    timestamp, ticker, quantity - quantity_block, price
-                ]
-
-        # else, compute and update
-        else:
-            # if last element quantity is lesser than quantity block, add
-            if last_quantity < quantity_block:
-
-                # If current + last > quantity block, add and update the first element in processed list
-                if quantity + last_quantity > quantity_block:
-                    result[-1][0] = timestamp
-                    result[-1][2] = quantity_block
-                    result[-1][3] += price * (quantity_block - last_quantity)
-                    processed_list[0][2] -= quantity_block - last_quantity
-
-                # Else, current + last < quantity block, add and pop the first element in processed list
-                else:
-                    result[-1][0] = timestamp
-                    result[-1][2] += quantity
-                    result[-1][3] += price * quantity
+                    # Remove from processed_list
                     processed_list.pop(0)
+                elif current_data[2] < required_quantity:
+                    if len(processed_list) == 1:
+                        processed_list.pop(0)
+                    elif current_ticker != processed_list[1][1]:
+                        processed_list.pop(0)
+                    else:
+                        current_timestamp = current_data[0]
+                        current_quantity += current_data[2]
+                        current_notional += (current_data[2] * current_data[3])
+                        required_quantity -= current_data[2]
 
-            # Else, it is equal and just append into it
-            else:
-                # If current + last > quantity block, add and update the first element in processed list
-                if quantity > quantity_block:
-                    result.append([
-                    timestamp, ticker, quantity_block, quantity_block * price
-                    ])
-                    processed_list[0][2] -= quantity_block - last_quantity
+                        processed_list.pop(0)
 
-                # Else, current + last < quantity block, add and pop the first element in processed list
                 else:
-                    result.append([
-                    timestamp, ticker, quantity, quantity * price
-                    ])
-                    processed_list.pop(0)
+                    current_timestamp = current_data[0]
+                    current_quantity += required_quantity
+                    current_notional += (required_quantity * current_data[3])
+                    processed_list[0][2] -= required_quantity
+                    required_quantity = 0
+            # If ticker is not the same, update current_ticker
+            else:
+                current_ticker = current_data[1]
 
-        # print('---------==')
-        # print(result)
+    if current_quantity == quantity_block:
+        blocks_list.append([current_timestamp, current_ticker,
+                           current_quantity, round(current_notional, 1)])
 
-    # If last element quantity lesser than quantity block, discard it
-    if result[-1][2] < quantity_block:
-        result.pop()
-
+    # Aggregate Data into List of Strings
     # Sort by timestamp
     sorted_result_list = sorted(
-        result,
-        key=lambda x: (datetime.strptime(x[0], '%H:%M').strftime('%H:%M')))
+        blocks_list,
+        key=lambda x:
+        (datetime.strptime(x[0], '%H:%M').strftime('%H:%M')))
 
     # Aggregate all the same timestamp, into the same string
     result_final = []
@@ -157,170 +125,27 @@ def to_cumulative_delayed(stream: list, quantity_block: int):
 
         timestamp = record[0]
         ticker = record[1]
-        cumulative_quantity = str(round(record[2], 1))
-        cumulative_notional = str(round(record[3], 1))
+        cumulative_quantity = str(record[2])
+        cumulative_notional = str(record[3])
 
         # Empty, append first record
         if result_final == []:
             result_final.append(timestamp + ',' + ticker + ',' +
-                                cumulative_quantity + ',' +
-                                cumulative_notional)
+                                cumulative_quantity + ',' + cumulative_notional)
 
-        # if not check the timestamp (first 5 index)
+        # if not, check the timestamp (first 5 index)
         else:
             if timestamp == result_final[-1][0:5]:
-                result_final[
-                    -1] += ',' + ticker + ',' + cumulative_quantity + ',' + cumulative_notional
+                result_final[-1] += ',' + ticker + ',' + \
+                    cumulative_quantity + ',' + cumulative_notional
 
             else:
-                result_final.append(timestamp + ',' + ticker + ',' +
-                                    cumulative_quantity + ',' +
-                                    cumulative_notional)
+                result_final.append(
+                    timestamp + ',' + ticker + ',' + cumulative_quantity + ',' + cumulative_notional)
 
     output = { "output": result_final}
 
     return output
-
-
-# def to_cumulative_delayed(stream: list, quantity_block: int):
-#     '''
-#     Assumptions:
-#     1. There could be multiple same ticks in the same timestamp but which set of tick that is added to the block does not have a particular order in this case
-
-#     '''
-#     if len(stream) == 0:
-#         return []
-#     # Process data
-#     split_list = []
-
-#     # Split each record within the list into timestamp, ticket, quantity, notional
-#     for record in stream:
-#         temp_array = record.split(',')
-#         # timestamp = datetime.strptime(temp_array[0], '%H:%M').strftime('%H:%M')
-#         timestamp = temp_array[0]
-#         ticker = temp_array[1]
-#         quantity = int(temp_array[2])
-#         price = float(temp_array[3])
-#         split_list.append([timestamp, ticker, quantity, price])
-
-#     # Sort by tickers first
-#     sorted_tickers_list = sorted(split_list, key=lambda x: x[1])
-
-#     # Group by tickers then sort by timestamp
-#     processed_list = []  # sorted by timestamp
-#     temp_array = [sorted_tickers_list[0]]
-
-#     for record in sorted_tickers_list[1:]:
-#         # Case 1 - If same ticker, append
-#         if record[1] == temp_array[-1][1]:
-#             temp_array.append(record)
-
-#         # Case 2 - Else, sort temp array and set it to new ticker
-#         else:
-#             processed_list += sorted(temp_array, key=lambda x: x[0])
-#             temp_array = [record]
-
-#     # Add in the last ticker temp array to processed list
-#     processed_list += sorted(temp_array, key=lambda x: x[0])
-
-#     # Cumulative Quantities in Blocks of Quantity Blocks
-
-#     # required_quantity works as a tracker
-#     required_quantity = quantity_block
-#     blocks_list = []
-#     current_timestamp = ""
-#     current_ticker = processed_list[0][1]
-#     current_quantity = 0
-#     current_notional = 0
-
-#     while len(processed_list) > 0:
-
-#         current_data = processed_list[0]
-
-#         # Case 1: If required_quantity is 0, add block into blocks_list
-#         if required_quantity == 0:
-#             blocks_list.append(
-#                 [current_timestamp, current_ticker, current_quantity, round(current_notional, 1)])
-#             required_quantity = quantity_block
-#             current_quantity = 0
-#             current_notional = 0
-
-#         # Case 2: If required_quantity is more than 0 (meaning we still need to add to the block to reach desired quantity_block)
-#         elif required_quantity > 0:
-
-#             if current_data[1] == current_ticker:
-
-#                 if current_data[2] == required_quantity:
-#                     current_timestamp = current_data[0]
-#                     current_quantity += current_data[2]
-#                     current_notional += (current_data[2] * current_data[3])
-#                     # Update required_quantity
-#                     required_quantity -= current_data[2]
-
-#                     # Remove from processed_list
-#                     processed_list.pop(0)
-#                 elif current_data[2] < required_quantity:
-#                     if len(processed_list) == 1:
-#                         processed_list.pop(0)
-#                     elif current_ticker != processed_list[1][1]:
-#                         processed_list.pop(0)
-#                     else:
-#                         current_timestamp = current_data[0]
-#                         current_quantity += current_data[2]
-#                         current_notional += (current_data[2] * current_data[3])
-#                         required_quantity -= current_data[2]
-
-#                         processed_list.pop(0)
-
-#                 else:
-#                     current_timestamp = current_data[0]
-#                     current_quantity += required_quantity
-#                     current_notional += (required_quantity * current_data[3])
-#                     processed_list[0][2] -= required_quantity
-#                     required_quantity = 0
-#             # If ticker is not the same, update current_ticker
-#             else:
-#                 current_ticker = current_data[1]
-
-#     if current_quantity == quantity_block:
-#         blocks_list.append([current_timestamp, current_ticker,
-#                            current_quantity, round(current_notional, 1)])
-
-#     # Aggregate Data into List of Strings
-#     # Sort by timestamp
-#     sorted_result_list = sorted(
-#         blocks_list,
-#         key=lambda x:
-#         (datetime.strptime(x[0], '%H:%M').strftime('%H:%M')))
-
-#     # Aggregate all the same timestamp, into the same string
-#     result_final = []
-
-#     for record in sorted_result_list:
-
-#         timestamp = record[0]
-#         ticker = record[1]
-#         cumulative_quantity = str(record[2])
-#         cumulative_notional = str(record[3])
-
-#         # Empty, append first record
-#         if result_final == []:
-#             result_final.append(timestamp + ',' + ticker + ',' +
-#                                 cumulative_quantity + ',' + cumulative_notional)
-
-#         # if not, check the timestamp (first 5 index)
-#         else:
-#             if timestamp == result_final[-1][0:5]:
-#                 result_final[-1] += ',' + ticker + ',' + \
-#                     cumulative_quantity + ',' + cumulative_notional
-
-#             else:
-#                 result_final.append(
-#                     timestamp + ',' + ticker + ',' + cumulative_quantity + ',' + cumulative_notional)
-
-#     output = { "output": result_final}
-
-#     return output
 
 
 logger = logging.getLogger(__name__)
