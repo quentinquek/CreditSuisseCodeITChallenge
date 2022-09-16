@@ -163,7 +163,8 @@ def to_cumulative(stream: list):
             else:
                 result_final.append(','.join(record))
 
-    output = {"outpuitve": result_final}
+    output = {"potato": result_final}
+    logger.info(f"HELLLOOOOOO, tell me my output {output}")
 
     return output
 
