@@ -81,7 +81,7 @@ def to_cumulative(stream: list):
                 result_list_unaggregated.append([
                     prev_timestamp, prev_ticker,
                     str(running[prev_ticker]["quantity"]),
-                    str(running[prev_ticker]["notional"])
+                    str(round(running[prev_ticker]["notional"], 1))
                 ])
 
                 # set previous to current
@@ -113,7 +113,7 @@ def to_cumulative(stream: list):
             result_list_unaggregated.append([
                 prev_timestamp, prev_ticker,
                 str(running[prev_ticker]["quantity"]),
-                str(running[prev_ticker]["notional"])
+                str(round(running[prev_ticker]["notional"], 1))
             ])
 
             # set previous to current
@@ -122,25 +122,27 @@ def to_cumulative(stream: list):
             prev_cumulative_quantity = record[2]
             prev_cumulative_notional = record[2] * record[3]
 
+    # End of for loop, append the last one
     if prev_ticker not in running:
             running[prev_ticker] = {"quantity": prev_cumulative_quantity, "notional": prev_cumulative_notional}
     else:
             running[prev_ticker]["quantity"] = running[prev_ticker]["quantity"] + prev_cumulative_quantity
             running[prev_ticker]["notional"] = running[prev_ticker]["notional"] + prev_cumulative_notional
-    print("outside loop")
-    # End of for loop, append the last one
     # result_list_unaggregated.append([
     #     prev_timestamp, prev_ticker,
     #     str(prev_cumulative_quantity),
     #     str(prev_cumulative_notional)
     # ])
+    print("outside loop")
     print(running)
+
     result_list_unaggregated.append([
         prev_timestamp, prev_ticker,
         str(running[prev_ticker]["quantity"]),
-        str(running[prev_ticker]["notional"])
+        str(round(running[prev_ticker]["notional"], 1))
     ])
 
+    print(result_list_unaggregated)
     # Aggregate all the same timestamp, into the same string
     result_final = []
 
@@ -170,6 +172,7 @@ logger = logging.getLogger(__name__)
 
 @app.route('/tickerStreamPart1', methods=['POST'])
 def tickerStreamPart1():
+    print("hello")
     data = request.get_json()
     logging.info("data sent for evaluation {}".format(data))
     inputValue = data.get("stream")
