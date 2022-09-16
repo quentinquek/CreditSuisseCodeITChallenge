@@ -116,7 +116,8 @@ def evaluate():
     data = request.get_json()
     logging.info("data sent for evaluation {}".format(data))
     inputValue = data.get("stream")
-    # result = inputValue * inputValue
+    result = inputValue * inputValue
+    print("Testing code...")
     logging.info("My result :{}".format(inputValue))
     return json.dumps(inputValue)
 
