@@ -8,11 +8,6 @@ def default_route():
     return "Python Template"
 
 
-@app.route("/health")
-def health():
-    return "url is working"
-
-
 logger = logging.getLogger()
 handler = logging.StreamHandler()
 formatter = logging.Formatter(
