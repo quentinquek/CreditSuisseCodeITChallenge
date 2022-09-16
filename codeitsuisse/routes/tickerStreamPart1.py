@@ -58,19 +58,8 @@ def to_cumulative(stream: list):
                 prev_cumulative_quantity += record[2]
                 prev_cumulative_notional += record[2] * record[3]
 
-                # if prev_ticker not in running:
-                #         running[prev_ticker] = {"quantity": prev_cumulative_quantity, "notional": prev_cumulative_notional}
-                # else:
-                #         running[prev_ticker]["quantity"] = running[prev_ticker]["quantity"] + prev_cumulative_quantity
-                #         running[prev_ticker]["notional"] = running[prev_ticker]["notional"] + prev_cumulative_notional
-
             # Case 1.2 - different ticker, append previous to result array
             else:
-                # result_list_unaggregated.append([
-                #     prev_timestamp, prev_ticker,
-                #     str(prev_cumulative_quantity),
-                #     str(prev_cumulative_notional)
-                # ])
 
                 if prev_ticker not in running:
                     running[prev_ticker] = {"quantity": prev_cumulative_quantity, "notional": prev_cumulative_notional}
@@ -92,14 +81,6 @@ def to_cumulative(stream: list):
 
         # Case 2 - Different timestamp
         else:
-            # result_list_unaggregated.append([
-            #     prev_timestamp, prev_ticker,
-            #     str(prev_cumulative_quantity),
-            #     str(prev_cumulative_notional)
-            # ])
-            print(record)
-            print("before:")
-            print(running)
 
             if prev_ticker not in running:
                 running[prev_ticker] = {
@@ -107,9 +88,6 @@ def to_cumulative(stream: list):
             else:
                 running[prev_ticker]["quantity"] = running[prev_ticker]["quantity"] + prev_cumulative_quantity
                 running[prev_ticker]["notional"] = running[prev_ticker]["notional"] + prev_cumulative_notional
-
-            print("after:")
-            print(running)
 
             result_list_unaggregated.append([
                 prev_timestamp, prev_ticker,
@@ -129,15 +107,6 @@ def to_cumulative(stream: list):
     else:
         running[prev_ticker]["quantity"] = running[prev_ticker]["quantity"] + prev_cumulative_quantity
         running[prev_ticker]["notional"] = running[prev_ticker]["notional"] + prev_cumulative_notional
-
-    print("outside loop")
-    # End of for loop, append the last one
-    # result_list_unaggregated.append([
-    #     prev_timestamp, prev_ticker,
-    #     str(prev_cumulative_quantity),
-    #     str(prev_cumulative_notional)
-    # ])
-    print(running)
     
     result_list_unaggregated.append([
         prev_timestamp, prev_ticker,
@@ -163,8 +132,7 @@ def to_cumulative(stream: list):
             else:
                 result_final.append(','.join(record))
 
-    output = {"potato": result_final}
-    logger.info(f"HELLLOOOOOO, tell me my output {output}")
+    output = {"output": result_final}
 
     return output
 
