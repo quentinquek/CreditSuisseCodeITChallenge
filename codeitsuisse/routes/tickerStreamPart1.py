@@ -76,10 +76,8 @@ def to_cumulative(stream: list):
                     running[prev_ticker] = {
                         "quantity": prev_cumulative_quantity, "notional": prev_cumulative_notional}
                 else:
-                    running[prev_ticker]["quantity"] = running[prev_ticker]["quantity"] + \
-                        prev_cumulative_quantity
-                    running[prev_ticker]["notional"] = running[prev_ticker]["notional"] + \
-                        prev_cumulative_notional
+                    running[prev_ticker]["quantity"] = running[prev_ticker]["quantity"] + prev_cumulative_quantity
+                    running[prev_ticker]["notional"] = running[prev_ticker]["notional"] + prev_cumulative_notional
 
                 result_list_unaggregated.append([
                     prev_timestamp, prev_ticker,
@@ -108,10 +106,8 @@ def to_cumulative(stream: list):
                 running[prev_ticker] = {
                     "quantity": prev_cumulative_quantity, "notional": prev_cumulative_notional}
             else:
-                running[prev_ticker]["quantity"] = running[prev_ticker]["quantity"] + \
-                    prev_cumulative_quantity
-                running[prev_ticker]["notional"] = running[prev_ticker]["notional"] + \
-                    prev_cumulative_notional
+                running[prev_ticker]["quantity"] = running[prev_ticker]["quantity"] + prev_cumulative_quantity
+                running[prev_ticker]["notional"] = running[prev_ticker]["notional"] + prev_cumulative_notional
 
             print("after:")
             print(running)
@@ -132,10 +128,9 @@ def to_cumulative(stream: list):
         running[prev_ticker] = {
             "quantity": prev_cumulative_quantity, "notional": prev_cumulative_notional}
     else:
-        running[prev_ticker]["quantity"] = running[prev_ticker]["quantity"] + \
-            prev_cumulative_quantity
-        running[prev_ticker]["notional"] = running[prev_ticker]["notional"] + \
-            prev_cumulative_notional
+        running[prev_ticker]["quantity"] = running[prev_ticker]["quantity"] + prev_cumulative_quantity
+        running[prev_ticker]["notional"] = running[prev_ticker]["notional"] + prev_cumulative_notional
+
     print("outside loop")
     # End of for loop, append the last one
     # result_list_unaggregated.append([
@@ -144,6 +139,7 @@ def to_cumulative(stream: list):
     #     str(prev_cumulative_notional)
     # ])
     print(running)
+    
     result_list_unaggregated.append([
         prev_timestamp, prev_ticker,
         str(running[prev_ticker]["quantity"]),
