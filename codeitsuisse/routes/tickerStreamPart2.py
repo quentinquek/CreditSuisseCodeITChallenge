@@ -71,15 +71,27 @@ def to_cumulative_delayed(stream: list, quantity_block: int):
             if current_ticker not in running:
                 running[current_ticker] = {"quantity": current_quantity, "notional": current_notional}
             else:
-                running[current_ticker]["quantity"] = running[current_ticker]["quantity"] + current_quantity
-                running[current_ticker]["notional"] = running[current_ticker]["notional"] + current_notional
+                running[current_ticker][2] = running[current_ticker]["quantity"] + current_quantity
+                running[current_ticker][3] = running[current_ticker]["notional"] + current_notional
 
+            if blocks_list:
+                if blocks_list[-1][0] == current_timestamp and blocks_list[-1][1] == current_ticker:
+                    blocks_list[-1][2] = str(int(blocks_list[-1][2]) + running[current_ticker]["quantity"])
+                    blocks_list[-1][3] = str(round(running[current_ticker]["notional"], 1))
+                
+                else:
+                    blocks_list.append([
+                    current_timestamp, current_ticker,
+                    str(running[current_ticker]["quantity"]),
+                    str(round(running[current_ticker]["notional"], 1))
+                    ])
 
-            blocks_list.append([
-                current_timestamp, current_ticker,
-                str(running[current_ticker]["quantity"]),
-                str(round(running[current_ticker]["notional"], 1))
-            ])
+            else:
+                blocks_list.append([
+                    current_timestamp, current_ticker,
+                    str(running[current_ticker]["quantity"]),
+                    str(round(running[current_ticker]["notional"], 1))
+                ])
             
             required_quantity = quantity_block
             current_quantity = 0

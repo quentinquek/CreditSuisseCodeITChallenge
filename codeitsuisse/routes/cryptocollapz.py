@@ -6,9 +6,6 @@ from datetime import datetime
 
 from codeitsuisse import app
 
-
-logger = logging.getLogger(__name__)
-
 def max_lifetime(data_input):
     print(data_input)
 
@@ -102,27 +99,3 @@ def cryptocollapz():
     # result = max_lifetime(json.loads(data))
     logging.info("My result :{}".format(result))
     return json.dumps(result)
-
-
-# Test Cases
-
-'''
----- Test Case 1 ----
-Input: [ 1, 2, 3, 4, 5 ]
-Expected output: [ 4, 4, 16, 4, 16 ]
-
----- Test Case 2 ----
-Input: [ 6, 7, 8, 9, 10 ]
-Expected output: [ 16, 52, 16, 52, 16 ]
-
----- Test Case 3 ----
-Input: [
-  [ 1, 2, 3, 4, 5 ],
-  [ 6, 7, 8, 9, 10 ]
-]
-
-Expected output: [
-  [ 4, 4, 16, 4, 16 ],
-  [ 16, 52, 8, 52, 16 ]
-]
-'''
