@@ -8,6 +8,7 @@ from codeitsuisse import app
 
 def max_lifetime(data_input):
     # print(data_input)
+    print(len(data_input))
 
     max_lifetime_history = {}
     # seen_values = []
@@ -160,6 +161,7 @@ def max_lifetime(data_input):
 @app.route('/cryptocollapz', methods=['POST'])
 def cryptocollapz():
     data = request.get_json()
+    # logging.info("data size: " + str(len(data)))
     logging.info("data sent for evaluation {}".format(data))
     # stream = data.get("stream")
     result = max_lifetime(data)
