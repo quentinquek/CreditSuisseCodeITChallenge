@@ -50,8 +50,6 @@ def to_cumulative_delayed(stream: list, quantity_block: int):
 
     # Cumulative Quantities in Blocks of Quantity Blocks
 
-    print("processed_list")
-    print(processed_list)
     # required_quantity works as a tracker
     required_quantity = quantity_block
     blocks_list = []
@@ -113,6 +111,7 @@ def to_cumulative_delayed(stream: list, quantity_block: int):
 
                     # Remove from processed_list
                     processed_list.pop(0)
+                    
                 elif current_data[2] < required_quantity:
                     if len(processed_list) == 1:
                         processed_list.pop(0)
@@ -159,6 +158,9 @@ def to_cumulative_delayed(stream: list, quantity_block: int):
         key=lambda x:
         (datetime.strptime(x[0], '%H:%M').strftime('%H:%M')))
 
+    print("======= sorted_result_list: ===========")
+    print(sorted_result_list)
+
     # Aggregate all the same timestamp, into the same string
     result_final = []
 
@@ -171,17 +173,28 @@ def to_cumulative_delayed(stream: list, quantity_block: int):
 
         # Empty, append first record
         if result_final == []:
-            result_final.append(timestamp + ',' + ticker + ',' +
-                                cumulative_quantity + ',' + cumulative_notional)
+            result_final.append(timestamp + ',' + ticker + ',' + cumulative_quantity + ',' + cumulative_notional)
 
         # if not, check the timestamp (first 5 index)
         else:
-            if timestamp == result_final[-1][0:5]:
-                result_final[-1] += ',' + ticker + ',' + cumulative_quantity + ',' + cumulative_notional
+            print(result_final)
+            print(result_final[-1][7])
+            # if timestamp == result_final[-1][0:5] and ticker == result_final[-1][6]:
+            #     print("inside same time different ticker")
+            #     # result_final[-1] += ',' + ticker + ',' + cumulative_quantity + ',' + cumulative_notional
+            #     result_final.pop()
+            #     result_final.append(timestamp + ',' + ticker + ',' + cumulative_quantity + ',' + cumulative_notional)
 
-            else:
-                result_final.append(
-                    timestamp + ',' + ticker + ',' + cumulative_quantity + ',' + cumulative_notional)
+            # else:
+            #     result_final.append(
+            #         timestamp + ',' + ticker + ',' + cumulative_quantity + ',' + cumulative_notional)
+            
+            if timestamp == result_final[-1][0:5] and ticker == result_final[-1][6]:
+                print("inside same time different ticker")
+                # result_final[-1] += ',' + ticker + ',' + cumulative_quantity + ',' + cumulative_notional
+                result_final.pop()
+                
+            result_final.append(timestamp + ',' + ticker + ',' + cumulative_quantity + ',' + cumulative_notional)
 
     output = { "output": result_final}
 
