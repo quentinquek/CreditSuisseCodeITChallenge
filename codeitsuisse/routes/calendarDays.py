@@ -41,9 +41,8 @@ def getCalendarDays(input: list):
     if (calendar.isleap(input[0])):
         numOfDaysInYear = 366
     
-    inputWithoutYear = input[1::].sort()
-
-    
+    inputWithoutYear = input[1::]
+    inputWithoutYear.sort()
 
     for i in range(len(inputWithoutYear)):
         dayOfYear = inputWithoutYear[i]
@@ -86,15 +85,6 @@ def getCalendarDays(input: list):
     # Case 4: First full weekday in February, return "       ,weekday,       ,       ,       ,       ,       ,       ,       ,       ,       ,       ,"
     
     return result
-
-
-            
-
-
-
-
-
-    return input
 
 @app.route('/calendarDays', methods=['POST'])
 def calendarDays():
