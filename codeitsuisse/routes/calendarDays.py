@@ -83,8 +83,9 @@ def getCalendarDays(input: list):
     # case 3: All january 2022 weekends, return "weekend,       ,       ,       ,       ,       ,       ,       ,       ,       ,       ,       ,", weekends = [sat, sun]
 
     # Case 4: First full weekday in February, return "       ,weekday,       ,       ,       ,       ,       ,       ,       ,       ,       ,       ,"
-    
-    return result
+    output = {"part1": result}
+
+    return output
 
 @app.route('/calendarDays', methods=['POST'])
 def calendarDays():
