@@ -90,8 +90,6 @@ def getCalendarDays(input: list):
         else:
             result += temp + ','
 
-    output = {"part1": result}
-
     # Part 2
     # result = "m      , t     ,weekend,       ,       ,       ,       ,       ,       ,       ,       ,       ,"
     result2 = []
@@ -129,7 +127,8 @@ def getCalendarDays(input: list):
         
         currentMonth += 1
     
-    print(result2)
+    
+    output = {"part1": result, "part2": result2}
 
     return output
 
