@@ -7,6 +7,16 @@ import datetime
 
 from codeitsuisse import app
 
+def get_day(year, month, day):
+
+    d = datetime.datetime(year, month, 1)
+    offset = day-d.weekday() #weekday = 1 means tuesday
+    if offset < 0:
+        offset+=7
+    actualDate = d+datetime.timedelta(offset)
+    day_of_year = actualDate.timetuple().tm_yday
+    return day_of_year
+
 def getCalendarDays(input: list):
 
     # Assumption: Ignore any values less than 1 or greater than number of days of the year
@@ -71,19 +81,54 @@ def getCalendarDays(input: list):
 
         # Equal: 2, check if it's sat and sun, if yes = weekends
         elif temp == "     ss":
-            result += "weekends,"
+            result += "weekend,"
 
         # Equal: 5, Check if sat and sun is not inside, if yes = weekdays
         elif temp == "mtwtf  ":
-            result += "weekdays,"
+            result += "weekday,"
         
         else:
             result += temp + ','
 
-    # case 3: All january 2022 weekends, return "weekend,       ,       ,       ,       ,       ,       ,       ,       ,       ,       ,       ,", weekends = [sat, sun]
-
-    # Case 4: First full weekday in February, return "       ,weekday,       ,       ,       ,       ,       ,       ,       ,       ,       ,       ,"
     output = {"part1": result}
+
+    # Part 2
+    result2 = []
+    derivedYear = 2001
+    for y in range(len(result)):
+        if result[i] == ' ':
+            derivedYear + i
+            break
+    
+    
+    result2.append(derivedYear)
+    currentMonth = 1
+    outputArray = result.split(",")
+    # print(outputArray)
+    
+    for element in outputArray:
+        if element == '       ':
+            currentMonth += 1
+
+        elif element == 'alldays':
+            for i in range(7):
+                print("hehehee", i)
+                result2.append(get_day(derivedYear, currentMonth, i))
+
+        elif element == 'weekend':
+            for i in range(2):
+                result2.append(get_day(derivedYear, currentMonth, i+5))
+
+        elif element == 'weekday':
+            for i in range(5):
+                result2.append(get_day(derivedYear, currentMonth, i))
+
+        else:
+            for i in range(len(element)):
+                if element[i] != " ":
+                    result2.append(get_day(derivedYear, currentMonth, i))
+    
+    print(result2)
 
     return output
 
