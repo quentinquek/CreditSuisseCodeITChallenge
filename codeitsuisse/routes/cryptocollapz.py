@@ -8,7 +8,7 @@ from codeitsuisse import app
 
 def max_lifetime(data_input):
     # print(data_input)
-    print(len(data_input))
+    # print(len(data_input))
 
     max_lifetime_history = {}
     # seen_values = []
@@ -69,53 +69,55 @@ def max_lifetime(data_input):
                 #     else:
                 #         curr_val = curr_val * 3 + 1
 
-                # ======= Logic: if we have yet to see it in dictionary, we need to check. Once we see, we break out of loop and compare current max with that max
-                while curr_val not in max_lifetime_history:
-                    # print(curr_val)
-                    all_values.append(curr_val)
+                if each_val < 100:
 
-                    # if curr_val not in max_lifetime_history:
-                    #     max_lifetime_history[curr_val] = curr_val
+                    while curr_val not in all_values:
+                        print("curr_val: " + str(curr_val))
+                        all_values.append(curr_val)
 
-                    if curr_val > max:
-                        max = curr_val
-                        # max_lifetime_history[curr_val] = max
+                        # if curr_val not in max_lifetime_history:
+                        #     max_lifetime_history[curr_val] = curr_val
 
-                        for num in all_values:
-                            max_lifetime_history[num] = max
-                    
-                    if curr_val % 2 == 0:
-                        curr_val = curr_val // 2
-                    # If value is odd 
-                    else:
-                        curr_val = curr_val * 3 + 1
-                
-                if max_lifetime_history[curr_val] > max:
-                    max = max_lifetime_history[curr_val]
+                        if curr_val > max:
+                            max = curr_val
+                            # max_lifetime_history[curr_val] = max
+
+                            for num in all_values:
+                                max_lifetime_history[num] = max
+                        
+                        if curr_val % 2 == 0:
+                            curr_val = curr_val // 2
+                        # If value is odd 
+                        else:
+                            curr_val = curr_val * 3 + 1
 
                 # ======= Logic - if we divde 2 times, it is hard to recover to be bigger than max =======
-                # while num_divide < 2:
-                #     # print(curr_val)
-                #     all_values.append(curr_val)
-
-                #     # if curr_val not in max_lifetime_history:
-                #     #     max_lifetime_history[curr_val] = curr_val
-
-                #     if curr_val > max:
-                #         max = curr_val
-                #         # max_lifetime_history[curr_val] = max
-
-                #         for num in all_values:
-                #             max_lifetime_history[num] = max
+                else:
+                    print("curr_val:" + str(curr_val))
                     
-                #     if curr_val % 2 == 0:
-                #         curr_val = curr_val // 2
-                #         num_divide += 1
-                #     else:
-                #         curr_val = curr_val * 3 + 1 
-                #         num_divide = 0
+                    while num_divide < 2:
+                        # print(curr_val)
+                        print("num_divide:" + str(num_divide))
+                        all_values.append(curr_val)
 
-                
+                        # if curr_val not in max_lifetime_history:
+                        #     max_lifetime_history[curr_val] = curr_val
+
+                        if curr_val > max:
+                            max = curr_val
+                            # max_lifetime_history[curr_val] = max
+
+                            for num in all_values:
+                                max_lifetime_history[num] = max
+                        
+                        if curr_val % 2 == 0:
+                            curr_val = curr_val // 2
+                            num_divide += 1
+                        else:
+                            curr_val = curr_val * 3 + 1 
+                            num_divide = 0
+
+                print("max:" + str(max))
                 max_lifetime_history[each_val] = max
                 corresponding_max.append(max)
             
