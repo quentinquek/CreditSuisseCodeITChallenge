@@ -93,13 +93,14 @@ def getCalendarDays(input: list):
     output = {"part1": result}
 
     # Part 2
+    # result = "m      , t     ,weekend,       ,       ,       ,       ,       ,       ,       ,       ,       ,"
     result2 = []
     derivedYear = 2001
+
     for y in range(len(result)):
-        if result[i] == ' ':
-            derivedYear + i
+        if result[y] == ' ':
+            derivedYear += y
             break
-    
     
     result2.append(derivedYear)
     currentMonth = 1
@@ -107,10 +108,8 @@ def getCalendarDays(input: list):
     # print(outputArray)
     
     for element in outputArray:
-        if element == '       ':
-            currentMonth += 1
 
-        elif element == 'alldays':
+        if element == 'alldays':
             for i in range(7):
                 print("hehehee", i)
                 result2.append(get_day(derivedYear, currentMonth, i))
@@ -123,10 +122,12 @@ def getCalendarDays(input: list):
             for i in range(5):
                 result2.append(get_day(derivedYear, currentMonth, i))
 
-        else:
+        elif element != '       ':
             for i in range(len(element)):
                 if element[i] != " ":
                     result2.append(get_day(derivedYear, currentMonth, i))
+        
+        currentMonth += 1
     
     print(result2)
 
