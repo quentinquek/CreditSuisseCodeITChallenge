@@ -51,8 +51,8 @@ def max_lifetime(data_input):
                     print(curr_val)
                     all_values.append(curr_val)
 
-                    if curr_val not in max_lifetime_history:
-                        max_lifetime_history[curr_val] = curr_val
+                    # if curr_val not in max_lifetime_history:
+                    #     max_lifetime_history[curr_val] = curr_val
 
                     if curr_val > max:
                         max = curr_val
