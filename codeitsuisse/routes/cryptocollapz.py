@@ -161,8 +161,10 @@ def max_lifetime(data_input):
 @app.route('/cryptocollapz', methods=['POST'])
 def cryptocollapz():
     data = request.get_json()
+    logging.info("data sent for evaluation ")
+
     # logging.info("data size: " + str(len(data)))
-    logging.info("data sent for evaluation {}".format(data))
+    # logging.info("data sent for evaluation {}".format(data))
     # stream = data.get("stream")
     result = max_lifetime(data)
 
