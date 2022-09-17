@@ -35,17 +35,42 @@ def max_lifetime(data_input):
                 
                 curr_val = each_val
 
+                num_divide = 0
+
                 # If value is even
                 if curr_val % 2 == 0:
                     curr_val = curr_val // 2
+                    num_divide += 1
                 # If value is odd 
                 else:
                     curr_val = curr_val * 3 + 1
+                    
 
                 # print(all_values)
                 # print("curr_val" + str(curr_val))
                 
-                while curr_val not in all_values:
+                # while curr_val not in all_values:
+                #     # print(curr_val)
+                #     all_values.append(curr_val)
+
+                #     # if curr_val not in max_lifetime_history:
+                #     #     max_lifetime_history[curr_val] = curr_val
+
+                #     if curr_val > max:
+                #         max = curr_val
+                #         # max_lifetime_history[curr_val] = max
+
+                #         for num in all_values:
+                #             max_lifetime_history[num] = max
+                    
+                #     if curr_val % 2 == 0:
+                #         curr_val = curr_val // 2
+                #     # If value is odd 
+                #     else:
+                #         curr_val = curr_val * 3 + 1
+
+                # ======= Logic: if we have yet to see it in dictionary, we need to check. Once we see, we break out of loop and compare current max with that max
+                while curr_val not in max_lifetime_history:
                     # print(curr_val)
                     all_values.append(curr_val)
 
@@ -65,17 +90,30 @@ def max_lifetime(data_input):
                     else:
                         curr_val = curr_val * 3 + 1
                 
+                if max_lifetime_history[curr_val] > max:
+                    max = max_lifetime_history[curr_val]
 
+                # ======= Logic - if we divde 2 times, it is hard to recover to be bigger than max =======
+                # while num_divide < 2:
+                #     # print(curr_val)
+                #     all_values.append(curr_val)
 
-                # while curr_val > max:
-                #     max = curr_val
+                #     # if curr_val not in max_lifetime_history:
+                #     #     max_lifetime_history[curr_val] = curr_val
 
+                #     if curr_val > max:
+                #         max = curr_val
+                #         # max_lifetime_history[curr_val] = max
+
+                #         for num in all_values:
+                #             max_lifetime_history[num] = max
+                    
                 #     if curr_val % 2 == 0:
-                #         curr_val /= 2
-                #     # If value is odd 
+                #         curr_val = curr_val // 2
+                #         num_divide += 1
                 #     else:
-                #         curr_val = curr_val * 3 + 1
-
+                #         curr_val = curr_val * 3 + 1 
+                #         num_divide = 0
 
                 
                 max_lifetime_history[each_val] = max
@@ -171,3 +209,26 @@ def cryptocollapz():
     # result = max_lifetime(json.loads(data))
     logging.info("My result :{}".format(result))
     return json.dumps(result)
+
+# Test Cases
+
+'''
+---- Test Case 1 ----
+Input: [[ 1, 2, 3, 4, 5 ]]
+Expected output: [[ 4, 4, 16, 4, 16 ]]
+
+---- Test Case 2 ----
+Input: [[ 6, 7, 8, 9, 10 ]]
+Expected output: [[ 16, 52, 16, 52, 16 ]]
+
+---- Test Case 3 ----
+Input: [
+  [ 1, 2, 3, 4, 5 ],
+  [ 6, 7, 8, 9, 10 ]
+]
+
+Expected output: [
+  [ 4, 4, 16, 4, 16 ],
+  [ 16, 52, 8, 52, 16 ]
+]
+'''
