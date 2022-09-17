@@ -62,19 +62,19 @@ def getCalendarDays(input: list):
     for x in range(len(template)):
         # "numbers": [2022, 1]
         # Case 2: First day of 2022 = saturday, return "     s ,       ,       ,       ,       ,       ,       ,       ,       ,       ,       ,       ,"
-        temp = "".join(template[x])
+        temp = "".join(template[x]) 
 
         # If length of array:
         # Equal: 7 = alldays
-        if template[x] == "mtwtfss,":
+        if temp == "mtwtfss":
             result += "alldays,"
 
         # Equal: 2, check if it's sat and sun, if yes = weekends
-        elif template[x] == "     ss,":
+        elif temp == "     ss":
             result += "weekends,"
 
         # Equal: 5, Check if sat and sun is not inside, if yes = weekdays
-        elif template[x] == "mtwtf  ,":
+        elif temp == "mtwtf  ":
             result += "weekdays,"
         
         else:
