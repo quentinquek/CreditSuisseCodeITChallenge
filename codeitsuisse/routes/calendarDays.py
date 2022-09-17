@@ -97,7 +97,7 @@ def getCalendarDays(input: list):
     return input
 
 @app.route('/calendarDays', methods=['POST'])
-def evaluate():
+def calendarDays():
     data = request.get_json()
     logging.info("data sent for evaluation {}".format(data))
     inputValue = data.get("numbers")

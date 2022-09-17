@@ -6,9 +6,6 @@ from datetime import datetime
 
 from codeitsuisse import app
 
-
-logger = logging.getLogger(__name__)
-
 def max_lifetime(data_input):
     print(data_input)
 
