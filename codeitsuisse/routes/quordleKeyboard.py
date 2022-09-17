@@ -6,6 +6,7 @@ from flask import request, jsonify
 from codeitsuisse import app
 
 def quordle_part_1(answers, attempts):
+    leftovers = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
     wrong_tries = {
         "A": 0,
         "B": 0,
@@ -60,6 +61,7 @@ def quordle_part_1(answers, attempts):
 
         for ch in each_attempt:
             # print(ch)
+            leftovers = leftovers.replace(ch, '', 1)
             if ch not in all_answers:
                 # wrong_tries[ch] += 1
                 if ch not in wrong_guess:
@@ -67,8 +69,8 @@ def quordle_part_1(answers, attempts):
             else:
                 # index = all_answers.index(ch)
                 all_answers = all_answers.replace(ch, '', 1)
-                # if ch not in all_answers:
-                #     wrong_guess += ch
+                if ch not in all_answers:
+                    wrong_guess += ch
 
         print("wrong_guess: " + wrong_guess)
         each_attempt_wrong.append(wrong_guess)
@@ -83,16 +85,32 @@ def quordle_part_1(answers, attempts):
     
     # Aggregate into string
     result = ""
-    for each_try in wrong_tries.values():
-        if each_try != 0:
-            result += str(each_try)
+    for try_num in wrong_tries.values():
+        if try_num != 0:
+            result += str(try_num)
 
-    return result
+    return (result, leftovers)
 
+def quordle_part_2(numGrey, leftovers, numbers):
+    letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    result = ''
+    print("numGrey: " + numGrey)
+    print("leftovers: " + leftovers)
 
+    for i in range(0, 21, 5):
+        current_list = numbers[i:(i+5)]
+        print(current_list)
+        binary = ''
+        for num in current_list:
+            if str(num) in numGrey:
+                binary += '1'
+            else:
+                binary += '0'
 
+        decimal = int(binary, 2)
+        result += letters[decimal - 1]
 
-# def quordle_part_2(answers, attempts, numbers):
+    return (result + leftovers)
     
 
 
@@ -108,16 +126,18 @@ def quordleKeyboard():
     attempts = data.get("attempts")
     numbers = data.get("numbers")
     result_1 = quordle_part_1(answers, attempts)
-    # result_2 = quordle_part_2(answers, attempts, numbers)
+    numGrey = result_1[0]
+    leftovers = result_1[1]
+    result_2 = quordle_part_2(numGrey, leftovers, numbers)
 
-    # result = {
-    #     "part1": result_1,
-    #     "part2": result_2
-    # }
+    result = {
+        "part1": numGrey,
+        "part2": result_2
+    }
 
     # result = max_lifetime(json.loads(data))
-    logging.info("My result :{}".format(result_1))
-    return json.dumps(result_1)
+    logging.info("My result :{}".format(result))
+    return json.dumps(result)
 
 # Test Cases
 
@@ -128,7 +148,7 @@ Input: {
   "attempts": ["XYZXY", "ABCDE", "FGHIJ", "AAAAA", "PQRST", "KLMNO"],
   "numbers": [125, 441, 968, 137, 417, 554, 978, 666, 145, 137, 343, 26, 898, 54, 222, 2, 777, 837, 6, 478, 970, 526, 26, 44, 41]
 }
-Expected output: 
+Expected output: {"part1": "55555444441111122222666", "part2": "HTKRGUVW"}
 
 ---- Test Case 2 ----
 Input: {
