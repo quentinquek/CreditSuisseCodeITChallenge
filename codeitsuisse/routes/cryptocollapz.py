@@ -48,8 +48,7 @@ def max_lifetime(data_input):
                     print(curr_val)
                     all_values.append(curr_val)
 
-                    if curr_val not in max_lifetime_history:
-                        max_lifetime_history[curr_val] = curr_val
+            
 
                     if curr_val > max:
                         max = curr_val
@@ -99,27 +98,3 @@ def cryptocollapz():
     # result = max_lifetime(json.loads(data))
     logging.info("My result :{}".format(result))
     return json.dumps(result)
-
-
-# Test Cases
-
-'''
----- Test Case 1 ----
-Input: [ 1, 2, 3, 4, 5 ]
-Expected output: [ 4, 4, 16, 4, 16 ]
-
----- Test Case 2 ----
-Input: [ 6, 7, 8, 9, 10 ]
-Expected output: [ 16, 52, 16, 52, 16 ]
-
----- Test Case 3 ----
-Input: [
-  [ 1, 2, 3, 4, 5 ],
-  [ 6, 7, 8, 9, 10 ]
-]
-
-Expected output: [
-  [ 4, 4, 16, 4, 16 ],
-  [ 16, 52, 8, 52, 16 ]
-]
-'''
