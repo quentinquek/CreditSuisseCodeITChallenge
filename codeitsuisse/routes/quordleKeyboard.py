@@ -71,6 +71,7 @@ def quordle_part_1(answers, attempts):
                 all_answers = all_answers.replace(ch, '', 1)
                 if ch not in all_answers:
                     wrong_guess += ch
+                    # each_attempt_wrong.append("ch")
 
         print("wrong_guess: " + wrong_guess)
         each_attempt_wrong.append(wrong_guess)

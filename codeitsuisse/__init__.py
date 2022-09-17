@@ -7,6 +7,8 @@ import codeitsuisse.routes.tickerStreamPart2
 import codeitsuisse.routes.cryptocollapz
 import codeitsuisse.routes.calendarDays
 import codeitsuisse.routes.quordleKeyboard
+import codeitsuisse.routes.reversle
+
 
 
 
